@@ -19,22 +19,23 @@ let Andreas = sprites.create(img`
 controller.moveSprite(Andreas)
 Andreas.setStayInScreen(true)
 Andreas.setPosition(80, 120)
-let myMovement = enemies.createMovementPattern(enemies.MovementType.Straight, enemies.MovementType.ZigZag, enemies.MovementType.SweepRight, 10, 10)
-let Fighter = enemies.createEnemy(img`
-    . . . . . . . 5 5 . . . . . . . 
-    . b b . . . 5 2 2 5 . . . b b . 
-    b c c b b . 5 2 2 5 . b b b b b 
-    b c c c b b . b b . b b c c c b 
-    b c c c b b b b b b b b c c c b 
-    b c c c b c b c c b c b c c c b 
-    b c c c b c b c c b c b c c c b 
-    . b c c b c 8 8 8 8 c b c c b . 
-    . . b c b c 8 8 8 8 c b c b . . 
-    . . . b b c 8 8 8 8 c b b . . . 
-    . . . . b c c 8 8 c c b . . . . 
-    . . . . . b c b b c b . . . . . 
-    . . . . . . b b b b . . . . . . 
-    . . . . . . . b b . . . . . . . 
-    . . . . . . . b b . . . . . . . 
-    . . . . . . . . . . . . . . . . 
-    `, enemies.EnemyType.Fighter, 80, 0)
+let myEnemyFormation = enemies.createFormation(img`
+    . 5 5 5 . . . . . . . . 5 5 5 . 
+    5 4 4 4 5 . . b b . . 5 4 4 4 5 
+    5 4 2 4 5 b b b b b b 5 4 2 4 5 
+    . b b b . c b c c b c . b b b . 
+    b b b b b c b c c b c b b b b b 
+    b c c c b c 8 8 8 8 c b c c c b 
+    b c c c b c 8 8 8 8 c b c c c b 
+    b c c c b c 8 8 8 8 c b c c c b 
+    b c c c b c c 8 8 c c b c c c b 
+    b c c c b b c c c c b b c c c b 
+    b c c c b . b b b b . b c c c b 
+    b c c c b . . . . . . b c c c b 
+    b c c c b . . . . . . b c c c b 
+    b c c c b . . . . . . b c c c b 
+    b c c c b . . . . . . b c c c b 
+    b b b b b . . . . . . b b b b b 
+    `, enemies.EnemyType.Fighter, enemies.FormationType.VShape, 4, 20, 80, 0)
+let myMovement = enemies.createMovementPattern(enemies.MovementType.Straight, enemies.MovementType.Stop, enemies.MovementType.SweepRight, 100, 100)
+enemies.setEnemyFormationMovement(myEnemyFormation, myMovement)

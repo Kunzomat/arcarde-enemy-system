@@ -1,0 +1,27 @@
+{
+    "image2": {
+        "data": "hwQQABAAAABQBbu7u7u7u0W0y8zMzMy8RbLLzMzMzLxFtMvMzMzMvFAFu7u7u7u7AMvMzLwAAAAAu4uIzAsAALDLjIjICwAAsMuMiMgLAAAAu4uIzAsAAADLzMy8AAAAUAW7u7u7u7tFtMvMzMzMvEWyy8zMzMy8RbTLzMzMzLxQBbu7u7u7uw==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "interceptor"
+    },
+    "image1": {
+        "data": "hwQQABAAAAAAu7sLAAAAALDMzLwAAAAAsMzMzAsAAAAAy8zMvAAAAAC7u7u7CwAAALDLzMy8AABQBbuLiMwLACWyy4yIuLsLJbLLjIi4uwtQBbuLiMwLAACwy8zMvAAAALu7u7sLAAAAy8zMvAAAALDLzMwLAAAAsMvMvAAAAAAAu7sLAAAAAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "fighter"
+    },
+    "image3": {
+        "data": "hwQQABAAAABQBbu7u7sLAEW0y8zMzAsARbLLzMzMCwBFtMvMzMwLAFAFu7u7uwsAVQXLzMy8uwBFtIvIiMy8C0Wyi8iIyMy7RbKLyIjIzLtFtIvIiMy8C1AFy8zMvLsAUAW7u7u7CwBFtMvMzMwLAEWyy8zMzAsARbTLzMzMCwBQBbu7u7sLAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "bomber"
+    },
+    "image4": {
+        "data": "hwQQABAAAAAAAAAAEBERAAAAAADR3R0BAAAAEN3dHQEAAADR3d0dAAAAEBEREREAAADR3d0dAQAAEN2IGBFQBRARgYjYHSFSEBGBiNgdIVIAEN2IGBFQBQAA0d3dHQEAAAAQEREREQAAAADR3d0dAAAAABDd3d0BAAAAANHd3QEAAAAAEBERAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "player"
+    },
+    "*": {
+        "mimeType": "image/x-mkcd-f4",
+        "dataEncoding": "base64",
+        "namespace": "myImages"
+    }
+}

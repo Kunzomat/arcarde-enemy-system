@@ -55,10 +55,13 @@ namespace enemies {
 
         sprite: Sprite
         type: EnemyType
-        movement: MovementType
+        movement: MovementPattern
 
         private baseX: number = 0
         private time: number = 0
+
+        private phase: number = 0
+        private phaseTime: number = 0
 
         constructor(img: Image, type: EnemyType, x: number, y: number) {
 
@@ -66,29 +69,61 @@ namespace enemies {
             this.sprite.setPosition(x, y)
 
             this.type = type
-            this.movement = MovementType.Straight
+            this.movement = new MovementPattern(enemies.MovementType.Straight, enemies.MovementType.Straight, enemies.MovementType.Straight, 30, 60)
 
             this.baseX = x
 
             allEnemies.push(this)
         }
 
-        setMovement(m: MovementType) {
+        setMovement(m: MovementPattern) {
             this.movement = m
+            this.phase = 0
+            this.phaseTime = 0
         }
 
         update() {
 
-            this.time += 1
+            this.time++
+            this.phaseTime++
 
-            switch (this.movement) {
+            // Phase wechseln
+            if (this.phase == 0 && this.phaseTime > this.movement.entryDuration) {
+                this.phase = 1
+                this.phaseTime = 0
+            }
+
+            if (this.phase == 1 && this.phaseTime > this.movement.activeDuration) {
+                this.phase = 2
+                this.phaseTime = 0
+            }
+
+            // Aktuellen MovementType bestimmen
+            let currentMovement: MovementType
+
+            if (this.phase == 0) {
+                currentMovement = this.movement.entry
+            } else if (this.phase == 1) {
+                currentMovement = this.movement.active
+            } else {
+                currentMovement = this.movement.exit
+            }
+
+            this.applyMovement(currentMovement)
+        }
+
+        private applyMovement(m: MovementType) {
+
+            switch (m) {
 
                 case MovementType.Straight:
                     this.sprite.vx = 0
                     this.sprite.vy = 30
+                    this.sprite.ay = 0
                     break
 
                 case MovementType.ZigZag:
+                    this.sprite.vy = 20
                     this.sprite.x = this.baseX + Math.sin(this.time / 15) * 50
                     break
 
@@ -101,7 +136,7 @@ namespace enemies {
 
                 case MovementType.Dive:
                     this.sprite.vx = 0
-                    this.sprite.ay = 100
+                    this.sprite.ay = 150
                     break
 
                 case MovementType.SweepRight:
@@ -115,12 +150,8 @@ namespace enemies {
                     break
 
                 case MovementType.Stop:
-                    if (this.sprite.y < 40) {
-                        this.sprite.vy = 30
-                    } else {
-                        this.sprite.vy = 0
-                        this.sprite.vx = 0
-                    }
+                    this.sprite.vx = 0
+                    this.sprite.vy = 0
                     break
 
                 case MovementType.Bounce:
@@ -159,10 +190,20 @@ namespace enemies {
     //% block="set $enemy movement to $movement"
     export function setEnemyMovement(
         enemy: Enemy,
-        movement: MovementType
+        movement: MovementPattern
     ) {
         enemy.setMovement(movement)
     }    
+
+    //% block="set $enemys formation movement to $movement"
+    export function setEnemyFormationMovement(
+        enemys: Enemy[],
+        movement: MovementPattern
+    ) {
+        for (let e of enemys) {
+            e.setMovement(movement)
+        }
+    }
 
     //% block="enemy formation $img type $type formation $formation count $count spacing $spacing at x $x y $y"
     //% blockSetVariable=myEnemyFormation
