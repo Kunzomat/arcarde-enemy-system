@@ -38,4 +38,23 @@ let myEnemyFormation = enemies.createFormation(img`
     b b b b b . . . . . . b b b b b 
     `, enemies.EnemyType.Fighter, enemies.FormationType.VShape, 4, 20, 80, 0)
 let myMovement = enemies.createMovementPattern(enemies.MovementType.Straight, enemies.MovementType.Stop, enemies.MovementType.SweepRight, 100, 100)
+let myProjectile = enemies.createProjectile(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . 4 4 . . . . . . . 
+    . . . . . . 4 5 5 4 . . . . . . 
+    . . . . . . 2 5 5 2 . . . . . . 
+    . . . . . . . 2 2 . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    `, enemies.ProjectileType.Laser, enemies.FireType.SpreadNarrow)
 enemies.setEnemyFormationMovement(myEnemyFormation, myMovement)
+enemies.setEnemyFormationProjectile(myEnemyFormation, myProjectile)

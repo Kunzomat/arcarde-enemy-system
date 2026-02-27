@@ -12,13 +12,14 @@
         "enemy.ts",
         "movement.ts",
         "images.g.jres",
-        "images.g.ts"
+        "images.g.ts",
+        "projectil.ts"
     ],
     "testFiles": [
         "test.ts"
     ],
     "targetVersions": {
-        "target": "4.0.5",
+        "target": "4.0.8",
         "targetId": "arcade"
     },
     "supportedTargets": [

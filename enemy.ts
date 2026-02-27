@@ -2,7 +2,7 @@ namespace SpriteKind {
     export const GameEnemy = SpriteKind.create()
 }
 
-//% color=#8B0000 icon="\uf6e2" block="Enemies"
+//% color=#8B0000 icon="\uf188" block="Enemies"
 namespace enemies {
 
     export enum EnemyType {
@@ -17,10 +17,8 @@ namespace enemies {
     export enum FormationType {
         //% block="line"
         Line = 0,
-
         //% block="v shape"
         VShape = 1,
-
         //% block="wide arc"
         Arc = 2
     }
@@ -28,25 +26,18 @@ namespace enemies {
     export enum MovementType {
         //% block="straight"
         Straight = 0,
-
         //% block="zigzag"
         ZigZag = 1,
-
         //% block="follow player"
         Follow = 3,
-
         //% block="dive"
         Dive = 4,
-
         //% block="sweep right"
         SweepRight = 5,
-
         //% block="sweep left"
         SweepLeft = 6,
-
         //% block="stop"
         Stop = 8,
-
         //% block="bounce"
         Bounce = 10
     }
@@ -56,10 +47,11 @@ namespace enemies {
         sprite: Sprite
         type: EnemyType
         movement: MovementPattern
+        definition: ProjectileDefinition
 
+        private hasFired: boolean = false
         private baseX: number = 0
         private time: number = 0
-
         private phase: number = 0
         private phaseTime: number = 0
 
@@ -80,6 +72,10 @@ namespace enemies {
             this.movement = m
             this.phase = 0
             this.phaseTime = 0
+        }
+
+        setProjectileDefinition(d: ProjectileDefinition) {
+            this.definition = d
         }
 
         update() {
@@ -110,57 +106,64 @@ namespace enemies {
             }
 
             this.applyMovement(currentMovement)
+
+            // Feuerlogik
+            if (!this.hasFired && this.definition.fireAfterFrames >= 0) {
+                if (this.time >= this.definition.fireAfterFrames) {
+                    this.spawnProjectile()
+                    this.hasFired = true
+                }
+            }
+        }
+
+        private spawnProjectile() {
+
+            if (!this.definition) return
+            new Projectile(
+                this.sprite.x,
+                this.sprite.bottom,
+                this.definition
+            )
         }
 
         private applyMovement(m: MovementType) {
-
             switch (m) {
-
                 case MovementType.Straight:
                     this.sprite.vx = 0
                     this.sprite.vy = 30
                     this.sprite.ay = 0
                     break
-
                 case MovementType.ZigZag:
                     this.sprite.vy = 20
                     this.sprite.x = this.baseX + Math.sin(this.time / 15) * 50
                     break
-
                 case MovementType.Follow:
                     let player = sprites.allOfKind(SpriteKind.Player)[0]
                     if (player) {
                         this.sprite.follow(player, 40)
                     }
                     break
-
                 case MovementType.Dive:
                     this.sprite.vx = 0
                     this.sprite.ay = 150
                     break
-
                 case MovementType.SweepRight:
                     this.sprite.vx = 40
                     this.sprite.vy = 20
                     break
-
                 case MovementType.SweepLeft:
                     this.sprite.vx = -40
                     this.sprite.vy = 20
                     break
-
                 case MovementType.Stop:
                     this.sprite.vx = 0
                     this.sprite.vy = 0
                     break
-
                 case MovementType.Bounce:
-
                     if (this.sprite.vx == 0) {
                         this.sprite.vx = 40
                         this.sprite.vy = 20
                     }
-
                     if (this.sprite.left < 0 || this.sprite.right > scene.screenWidth()) {
                         this.sprite.vx *= -1
                     }
@@ -173,6 +176,22 @@ namespace enemies {
     // Zentrale Enemy-Liste
     export let allEnemies: Enemy[] = []
 
+
+    //% block="projectile sprite $img of type $p_type" fire $f_type
+    //% blockSetVariable=myProjectile
+    //% img.shadow=screen_image_picker
+    //% inlineInputMode=inline
+    export function createProjectile(
+        img: Image,
+        p_type: ProjectileType,
+        f_type: FireType
+
+    ): ProjectileDefinition {
+        let speed = 10
+        let damage = 10
+        return new ProjectileDefinition(img, speed, p_type, f_type, damage)
+    }
+
     //% block="enemy sprite $img of type $type at x $x y $y"
     //% blockSetVariable=myEnemy
     //% img.shadow=screen_image_picker
@@ -183,7 +202,6 @@ namespace enemies {
         x: number,
         y: number
     ): Enemy {
-
         return new Enemy(img, type, x, y)
     }
 
@@ -193,7 +211,15 @@ namespace enemies {
         movement: MovementPattern
     ) {
         enemy.setMovement(movement)
-    }    
+    }
+
+    //% block="set $enemy projectile definition to $definition"
+    export function setEnemyProjectileDefinition(
+        enemy: Enemy,
+        definition: ProjectileDefinition
+    ) {
+        enemy.setProjectileDefinition(definition)
+    }
 
     //% block="set $enemys formation movement to $movement"
     export function setEnemyFormationMovement(
@@ -202,6 +228,16 @@ namespace enemies {
     ) {
         for (let e of enemys) {
             e.setMovement(movement)
+        }
+    }
+
+    //% block="set $enemys formation projectile definition to $definition"
+    export function setEnemyFormationProjectile(
+        enemys: Enemy[],
+        definition: ProjectileDefinition
+    ) {
+        for (let e of enemys) {
+            e.setProjectileDefinition(definition)
         }
     }
 
@@ -220,45 +256,34 @@ namespace enemies {
     ): Enemy[] {
 
         let created: Enemy[] = []
-
-        // Mittelpunkt-Index
         let center = (count - 1) / 2
 
         for (let i = 0; i < count; i++) {
-
             let offsetX = 0
             let offsetY = 0
-
             let relative = i - center
 
             switch (formation) {
-
                 case FormationType.Line:
                     offsetX = relative * spacing
                     break
-
                 case FormationType.VShape:
                     offsetX = relative * spacing
                     offsetY = Math.abs(relative) * 8
                     break
-
                 case FormationType.Arc:
                     offsetX = relative * spacing
                     offsetY = Math.sin(relative / center * Math.PI) * 20
                     break
             }
-
             let e = new Enemy(
                 img,
                 type,
                 x + offsetX,
                 y + offsetY
             )
-
             created.push(e)
         }
-
         return created
     }
-
 }
