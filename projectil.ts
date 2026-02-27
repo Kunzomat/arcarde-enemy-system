@@ -16,7 +16,7 @@ namespace enemies {
         //% block="Side"
         Side = 4,
         //% block="Aimed at player"
-        Aimed = 5
+        Aimed = 5,
     }
 
     export enum ProjectileType {
@@ -63,6 +63,43 @@ namespace enemies {
         definition: ProjectileDefinition
         private time: number = 0
 
+        constructor(x: number, y: number, def: ProjectileDefinition) {
+            this.definition = def
+
+            switch (this.definition.f_type) {
+                case FireType.Single:
+                    this.projectiles.push(this.spawnSingle(x, y, this.definition, 0))
+                    break
+                case FireType.Twin:
+                    this.projectiles.push(this.spawnSingle(x - 5, y, this.definition, 0))
+                    this.projectiles.push(this.spawnSingle(x + 5, y, this.definition, 0))
+                    break
+                case FireType.SpreadNarrow:
+                    this.projectiles.push(this.spawnSingle(x, y, this.definition, -15))
+                    this.projectiles.push(this.spawnSingle(x, y, this.definition, 0))
+                    this.projectiles.push(this.spawnSingle(x, y, this.definition, 15))
+                    break
+                case FireType.SpreadWide:
+                    this.projectiles.push(this.spawnSingle(x, y, this.definition, -30))
+                    this.projectiles.push(this.spawnSingle(x, y, this.definition, 0))
+                    this.projectiles.push(this.spawnSingle(x, y, this.definition, 30))
+                    break
+                case FireType.Side:
+                    this.projectiles.push(this.spawnSingle(x, y, this.definition, -45))
+                    this.projectiles.push(this.spawnSingle(x, y, this.definition, 45))
+                    break
+                case FireType.Aimed:
+                    let player = sprites.allOfKind(SpriteKind.Player)[0]
+                    if (player) {
+                        let dx = player.x - x
+                        let dy = player.y - y
+                        let angle = Math.atan2(dx, dy) * 180 / Math.PI
+                        this.projectiles.push(this.spawnSingle(x, y, this.definition, angle))
+                    }
+                    break
+            }
+        }
+
         private spawnSingle(
             x: number,
             y: number,
@@ -80,42 +117,6 @@ namespace enemies {
             s.setVelocity(vx, vy)
 
             return s
-        }
-
-        constructor(x: number, y: number, def: ProjectileDefinition) {
-
-            switch (this.definition.f_type) {
-                case FireType.Single:
-                    this.projectiles.push(this.spawnSingle(x, y, def, 0))
-                    break
-                case FireType.Twin:
-                    this.projectiles.push(this.spawnSingle(x - 5, y, def, 0))
-                    this.projectiles.push(this.spawnSingle(x + 5, y, def, 0))
-                    break
-                case FireType.SpreadNarrow:
-                    this.projectiles.push(this.spawnSingle(x, y, def, -15))
-                    this.projectiles.push(this.spawnSingle(x, y, def, 0))
-                    this.projectiles.push(this.spawnSingle(x, y, def, 15))
-                    break
-                case FireType.SpreadWide:
-                    this.projectiles.push(this.spawnSingle(x, y, def, -30))
-                    this.projectiles.push(this.spawnSingle(x, y, def, 0))
-                    this.projectiles.push(this.spawnSingle(x, y, def, 30))
-                    break
-                case FireType.Side:
-                    this.projectiles.push(this.spawnSingle(x, y, def, -45))
-                    this.projectiles.push(this.spawnSingle(x, y, def, 45))
-                    break
-                case FireType.Aimed:
-                    let player = sprites.allOfKind(SpriteKind.Player)[0]
-                    if (player) {
-                        let dx = player.x - x
-                        let dy = player.y - y
-                        let angle = Math.atan2(dx, dy) * 180 / Math.PI
-                        this.projectiles.push(this.spawnSingle(x, y, def, angle))
-                    }
-                    break
-            }
         }
 
         update() {

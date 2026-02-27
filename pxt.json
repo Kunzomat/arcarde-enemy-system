@@ -13,7 +13,10 @@
         "movement.ts",
         "images.g.jres",
         "images.g.ts",
-        "projectil.ts"
+        "projectil.ts",
+        "formationts.ts",
+        "tilemap.g.jres",
+        "tilemap.g.ts"
     ],
     "testFiles": [
         "test.ts"
@@ -25,5 +28,5 @@
     "supportedTargets": [
         "arcade"
     ],
-    "preferredEditor": "tsprj"
+    "preferredEditor": "blocksprj"
 }

@@ -55,6 +55,9 @@ let myProjectile = enemies.createProjectile(img`
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . 
-    `, enemies.ProjectileType.Laser, enemies.FireType.SpreadNarrow)
+    `, enemies.ProjectileType.Rocket, enemies.FireType.SpreadWide)
 enemies.setEnemyFormationMovement(myEnemyFormation, myMovement)
 enemies.setEnemyFormationProjectile(myEnemyFormation, myProjectile)
+enemies.spawnFormationAfter(myEnemyFormation, 0)
+enemies.spawnFormationAfter(myEnemyFormation, 10)
+enemies.spawnFormationAfter(myEnemyFormation, 20)

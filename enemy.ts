@@ -173,11 +173,14 @@ namespace enemies {
 
     }
 
+
+    
+
     // Zentrale Enemy-Liste
     export let allEnemies: Enemy[] = []
 
 
-    //% block="projectile sprite $img of type $p_type" fire $f_type
+    //% block="projectile sprite $img of type $p_type with fire $f_type"
     //% blockSetVariable=myProjectile
     //% img.shadow=screen_image_picker
     //% inlineInputMode=inline
@@ -221,24 +224,31 @@ namespace enemies {
         enemy.setProjectileDefinition(definition)
     }
 
-    //% block="set $enemys formation movement to $movement"
+    //% block="set $formation formation movement to $movement"
     export function setEnemyFormationMovement(
-        enemys: Enemy[],
+        formation: Formation,
         movement: MovementPattern
     ) {
-        for (let e of enemys) {
-            e.setMovement(movement)
-        }
+        formation.movement = movement
     }
 
-    //% block="set $enemys formation projectile definition to $definition"
+    //% block="set $formation formation projectile definition to $projectile"
     export function setEnemyFormationProjectile(
-        enemys: Enemy[],
-        definition: ProjectileDefinition
+        formation: Formation,
+        projectile: ProjectileDefinition
     ) {
-        for (let e of enemys) {
-            e.setProjectileDefinition(definition)
-        }
+        formation.projectile = projectile
+    }
+
+    //% block="spawn $formation after $seconds seconds"
+    export function spawnFormationAfter(
+        formation: Formation,
+        seconds: number
+    ) {
+        control.runInParallel(function () {
+            pause(seconds * 1000)
+            formation.spawn()
+        })
     }
 
     //% block="enemy formation $img type $type formation $formation count $count spacing $spacing at x $x y $y"
@@ -253,37 +263,16 @@ namespace enemies {
         spacing: number,
         x: number,
         y: number
-    ): Enemy[] {
+    ): Formation {
 
-        let created: Enemy[] = []
-        let center = (count - 1) / 2
-
-        for (let i = 0; i < count; i++) {
-            let offsetX = 0
-            let offsetY = 0
-            let relative = i - center
-
-            switch (formation) {
-                case FormationType.Line:
-                    offsetX = relative * spacing
-                    break
-                case FormationType.VShape:
-                    offsetX = relative * spacing
-                    offsetY = Math.abs(relative) * 8
-                    break
-                case FormationType.Arc:
-                    offsetX = relative * spacing
-                    offsetY = Math.sin(relative / center * Math.PI) * 20
-                    break
-            }
-            let e = new Enemy(
-                img,
-                type,
-                x + offsetX,
-                y + offsetY
-            )
-            created.push(e)
-        }
-        return created
+        return new Formation(
+            img,
+            type,
+            formation,
+            count,
+            spacing,
+            x,
+            y
+        )
     }
 }
